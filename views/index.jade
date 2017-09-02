@@ -1,7 +1,7 @@
 extends layout
 block content
-  h1= title
-  body(ng-app='login'  ng-controller='loginController')
+  h1 Login
+  div(ng-controller='loginController')
     label 
       strong User Name
     br
@@ -16,4 +16,4 @@ block content
     input(type='text' placeholder='password' ng-model='data.password')
     br
     br
-    input(type='submit' value='Submit' ng-click='submit()')
+    input(type='submit' value='Submit' ng-click='login()')
