@@ -8,7 +8,7 @@ module.exports.startPing=function(datas,message,tokenId,chatId,repeatTime,pingTi
     tcpp.probe(datas.address, datas.port, function(err, available) {
          if(available){
             status=true
-            request('http://api.telegram.org/bot'+tokenId+'/sendmessage?chat_id='+chatId+'&text=Ping has startedfor '+datas.address, function (error, response, body){})
+            request('http://api.telegram.org/bot'+tokenId+'/sendmessage?chat_id='+chatId+'&text=Ping has started for '+datas.address, function (error, response, body){})
              interval=setInterval(function() {
                 console.log(repeatTime);
                 tcpp.ping(datas,  function(err, dataset) {
