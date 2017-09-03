@@ -8,7 +8,7 @@ block content
     a(href='/pingSetting') Set Ip and Port
     br
     br
-    h2 Abailable Data
+    h2 AVailable Data
     table.table.table-striped
         thead.thead-inverse
             tr
@@ -26,4 +26,5 @@ block content
                 td
                     button.btn.btn-success(type='button', ng-click='start(data._id)') Start
                     button.btn.btn-danger(type='button', ng-click='stop()') Stop
+                    button.btn.btn-primary(type='button', ng-click='delete(data._id)') Delete
             //{[{dataSet[0].familyName}]}

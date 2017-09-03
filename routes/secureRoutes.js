@@ -44,29 +44,35 @@ secureRoutes.use(function(req,res,next){
                 else{
                     tokenId=data.tokenId;
                     chatId=data.chatId;
+
+                    PingData.findData(id,function(err,data){
+                        if(err){
+                            res.json({"errorcode":1})
+                        }
+                        else{
+                            console.log(data)
+                           var datas={
+                                address:data.ip,
+                                port:data.port,
+                                attempts: 10,
+                            }
+                           var repeatTime=data.repeatTime*60000;
+                           var time=data.pingTime;
+                           var message="Time taken to ping is greater than " + time;
+                            Service.startPing(datas,message,tokenId,chatId,repeatTime,data.pingTime,function(data){
+                                if(data){
+                                res.json(data);
+                                }
+                           })    
+                
+                  }  
+                });
+
+
                 }
         
             });
-            PingData.findData(id,function(err,data){
-                if(err){
-                    res.json({"errorcode":1})
-                }
-                else{
-                    console.log(data)
-                   var datas={
-                        address:data.ip,
-                        port:data.port,
-                        attempts: 10,
-                    }
-                   var repeatTime=data.repeatTime*60000;
-                   var time=data.pingTime;
-                   var message="Time taken to ping is greater than " + time;
-                    Service.startPing(datas,message,tokenId,chatId,repeatTime,data.pingTime,function(data){
-                        res.json(data);
-                   })    
-        
-          }  
-        });
+
         });
         secureRoutes.post('/setToken',function(req,res){
             
@@ -121,17 +127,40 @@ secureRoutes.use(function(req,res,next){
         })
 
         secureRoutes.post('/stopPing',function(req,res){
-            console.log(req.body)
-            Service.stopPing(req.body,function(data){
-                console.log(data);
-                if(data){
-                    res.joson({'errorcode':1})
+            Token.findData(function(err,data){
+                if(err){
+                    res.json({"errorcode":1})
                 }
                 else{
-                    res.joson({'errorcode':0})
-                }
-           }) 
+                    tokenId=data.tokenId;
+                    chatId=data.chatId;
+                    Service.stopPing(tokenId,chatId,function(data){
+                        console.log(data);
+                        if(data){
+                            res.json({'errorcode':0})
+                        }
+                        else{
+                            res.json({'errorcode':1})
+                        }
+                }) 
 
-        })
+                }
+            });
+        });
+        
+    
+        secureRoutes.post('/deleteData',function(req,res){
+            console.log(req.body.userId);
+            PingData.deleteData(req.body.id,function(err,data){
+
+                if(err){
+                    res.json({"errorcode":1})
+                }
+                else{
+                    console.log(data);
+                    res.json(data);
+                }
+            })
+        });    
 
       module.exports = secureRoutes;

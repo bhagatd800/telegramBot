@@ -44,3 +44,7 @@ module.exports.findData=function(id,cb){
 module.exports.getData=function(id,cb){
 	pingData.find({userId:id},cb)
 }
+
+module.exports.deleteData=function(id,cb){
+	pingData.remove({_id:id},cb);
+}

@@ -175,10 +175,11 @@ app.controller("pingDataController", ['$scope','setPingData','$rootScope','$cook
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        app.controller("homeController", ['$scope','setPingData','$rootScope','getHomeData','$cookies','startPing','stopPing', function($scope,setPingData,$rootScope,getHomeData,$cookies,startPing,stopPing){
- 
+        app.controller("homeController", ['$scope','setPingData','$rootScope','getHomeData','$cookies','startPing','stopPing','deletePing', function($scope,setPingData,$rootScope,getHomeData,$cookies,startPing,stopPing,deletePing){
+
             $scope.getData=function()
             {   //alert("deepak");
+                
                 $scope.token=$cookies.get('token')
                 $scope.userId=$cookies.get('userId');
               //  alert($scope.token);
@@ -211,10 +212,27 @@ app.controller("pingDataController", ['$scope','setPingData','$rootScope','$cook
                     token:$scope.token,
                     userId:$scope.userId
                 }
-                alert(JSON.stringify( $scope.userData));
+                //alert(JSON.stringify( $scope.userData));
                 stopPing.postData($scope.userData);
             }
 
+            $scope.delete=function(data){
+                $scope.token=$cookies.get('token')
+                $scope.userId=$cookies.get('userId');
+                $scope.userData={
+                    token:$scope.token,
+                    userId:$scope.userId,
+                    id:data
+                }
+                //alert(JSON.stringify( $scope.userData));
+                deletePing.deleteData($scope.userData);
+                getHomeData.getData($scope.userData).then(function(datas){
+                    
+                    $scope.dataSet=datas;
+                 //  alert(JSON.stringify($scope.dataSet));
+                })
+            
+            }
 
         }]);
 
@@ -257,15 +275,17 @@ app.controller("pingDataController", ['$scope','setPingData','$rootScope','$cook
                              'Content-Type': 'application/json'
                     }
                 }).then(function(resp){
+                   // alert(resp.data);
                   if(resp.data.errorcode===1){
                     alert("some thing went wrong please try again");
                 
                   }
                  else if(resp.data==true){
+                       // alert(resp.data);
                         alert('ping started')
                     }
-                else{
-                    alert('does_not exixt')
+                else if(resp.data==false){
+                    alert('Destination does_not exist')
                 }
                 })
                 
@@ -279,7 +299,7 @@ app.controller("pingDataController", ['$scope','setPingData','$rootScope','$cook
             app.service("stopPing",['$http','$window',function($http,$window){
                 return{
                   postData:function(data){
-                alert(JSON.stringify(data));
+                //alert(JSON.stringify(data));
                     //alert(password.password1);
                   data=$http({
                     url: 'secure-api/stopPing',
@@ -295,7 +315,7 @@ app.controller("pingDataController", ['$scope','setPingData','$rootScope','$cook
                   }
              
                 else{
-                    alert('ping Stoped')
+                    alert('Ping Stoped')
                 }
                 })
                 
@@ -303,3 +323,30 @@ app.controller("pingDataController", ['$scope','setPingData','$rootScope','$cook
                 
                 }
                 }]);
+
+                app.service("deletePing",['$http','$window',function($http,$window){
+                    return{
+                      deleteData:function(data){
+                    //alert(JSON.stringify(data));
+                        //alert(password.password1);
+                      data=$http({
+                        url: 'secure-api/deleteData',
+                        method: "POST",
+                        data: data,
+                        headers: {
+                                 'Content-Type': 'application/json'
+                        }
+                    }).then(function(resp){
+                      if(resp.data.errorcode===1){
+                        alert("some thing went wrong please try again");
+                    
+                      }
+                        else{
+                            alert('Deleted Successfully');
+                        }
+                    })
+                
+                    }
+                    
+                    }
+                    }]);
