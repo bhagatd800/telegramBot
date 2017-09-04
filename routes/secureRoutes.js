@@ -37,7 +37,7 @@ secureRoutes.use(function(req,res,next){
             var id=req.body.id;
             var tokenId;
             var chatId;
-            Token.findData(function(err,data){
+            Token.findData(req.body.userId,function(err,data){
                 if(err){
                     res.json({"errorcode":1})
                 }
@@ -77,6 +77,7 @@ secureRoutes.use(function(req,res,next){
         secureRoutes.post('/setToken',function(req,res){
             
             var token =new Token({
+                userId:req.body.userId,
                 tokenId:req.body.tokenId,
                 chatId:req.body.chatId
             })
@@ -127,7 +128,7 @@ secureRoutes.use(function(req,res,next){
         })
 
         secureRoutes.post('/stopPing',function(req,res){
-            Token.findData(function(err,data){
+            Token.findData(req.body.userId,function(err,data){
                 if(err){
                     res.json({"errorcode":1})
                 }
